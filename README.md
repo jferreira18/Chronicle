@@ -23,27 +23,72 @@ Chronicle aims to function as a lightweight AI executive assistant that builds c
 * [x] Process/application monitoring
 * [x] Session duration tracking
 * [x] Local behavioral event logging
+* [x] Sessionization and activity grouping
+* [x] Activity categorization and topic inference
+* [x] Daily summary generation
+* [x] Local Ollama AI recap generation
+* [x] Exportable summary and recap artifacts
 * [x] Modular architecture foundation
 
 ## Current Capabilities
 
-Chronicle currently tracks:
+Chronicle currently tracks and reconstructs:
 
 * active applications
 * foreground window titles
 * session durations
 * timestamped work sessions
+* inferred work topics
+* context switching behavior
+* lightweight project relationships
+* daily operational summaries
+* local AI-generated activity recaps
 
-All activity is stored locally in SQLite.
+All activity processing and AI inference currently run locally.
 
 ---
 
 # Example Output
 
+## Raw Activity Log
+
 ```text
 2026-05-08T21:15:10 | Code.exe | activity_logger.py | 540s
 2026-05-08T21:24:10 | chrome.exe | NOAA API documentation | 320s
 2026-05-08T21:29:30 | OUTLOOK.EXE | Budget coordination email | 180s
+```
+
+## Sessionized Activity
+
+```text
+23:11-23:16 | Chronicle Development | 6.5 min
+- activity_service.py - Chronicle
+- activity_logger.py - Chronicle
+- AI Work Monitoring Tools
+
+18:59-19:01 | Music / Guitar | 5.2 min
+- The Brudi Brothers, 26 chords & tabs found @ Ultimate-Guitar.com
+- LAY A BURDEN ON ME CHORDS by The Brudi Brothers
+```
+
+## AI Recap Example
+
+```text
+Daily Recap:
+Most activity centered around Chronicle development, specifically around
+sessionization, categorization, and workflow reconstruction features.
+
+The user also briefly switched into career research, workstation troubleshooting,
+and entertainment-related browsing.
+
+Possible Themes:
+- AI workflow intelligence
+- productivity analytics
+- operational memory systems
+
+Recommendation:
+Continue improving Chronicle's semantic understanding before expanding into
+vector databases or autonomous behaviors.
 ```
 
 ---
@@ -57,11 +102,17 @@ All activity is stored locally in SQLite.
 * psutil
 * pywin32
 
+## AI / Analytics
+
+* Ollama
+* Local LLM inference
+* Rule-based semantic categorization
+* Sessionization pipeline
+
 ## Planned
 
 * FastAPI
 * React / TypeScript
-* Ollama
 * ChromaDB or pgvector
 * Docker
 
@@ -75,32 +126,9 @@ Chronicle/
   db/            # database initialization + schemas
   services/      # business logic
   scripts/       # runnable entry points
+  outputs/       # generated summaries + AI recaps
   data/          # local SQLite database
 ```
-
----
-
-# Project Goals
-
-## Near-Term Goals
-
-* Build reliable local activity tracking
-* Create searchable work history
-* Generate daily summaries
-* Detect focus blocks and context switching
-* Create lightweight productivity analytics
-
-## Long-Term Goals
-
-* AI-generated work recaps
-* Forecast upcoming tasks/schedules
-* Semantic memory retrieval
-* Browser research continuation
-* Open-loop/task detection
-* Multi-project awareness
-* Calendar/email integration
-* Local-first LLM reasoning
-* Persistent operational memory
 
 ---
 
@@ -111,25 +139,29 @@ Chronicle/
 * [x] SQLite database
 * [x] Active window monitoring
 * [x] Session logging
-* [ ] Activity query utilities
-* [ ] Daily summary generation
-* [ ] Timeline reconstruction
+* [x] Activity query utilities
+* [x] Daily summary generation
+* [x] Timeline reconstruction
+* [x] Sessionization pipeline
+* [x] Topic inference and categorization
 
 ## Phase 2 — Behavioral Analytics
 
-* [ ] Context switch detection
+* [x] Context switch detection
 * [ ] Focus block estimation
 * [ ] Time allocation analysis
 * [ ] Productivity scoring
-* [ ] Application categorization
+* [ ] Persistent project relationship mapping
+* [ ] Deep work estimation
 
 ## Phase 3 — AI Summarization
 
-* [ ] Ollama integration
-* [ ] Local LLM summaries
-* [ ] Session recap generation
+* [x] Ollama integration
+* [x] Local LLM summaries
+* [x] Session recap generation
 * [ ] Open-loop extraction
 * [ ] Suggested next actions
+* [ ] Multi-day behavioral analysis
 
 ## Phase 4 — Semantic Memory
 
@@ -137,6 +169,7 @@ Chronicle/
 * [ ] Vector database integration
 * [ ] Semantic session search
 * [ ] Cross-session context retrieval
+* [ ] Long-term project memory
 
 ## Phase 5 — Integrations
 
@@ -153,6 +186,7 @@ Chronicle/
 * [ ] Activity timeline visualization
 * [ ] AI insight dashboard
 * [ ] Search interface
+* [ ] Conversational “Ask Chronicle” interface
 
 ## Phase 7 — Advanced Agent Features
 
@@ -191,11 +225,29 @@ python -m scripts.run_logger
 python -m scripts.view_today
 ```
 
+## Generate Daily Summary
+
+```bash
+python -m scripts.summarize_day
+```
+
+## Generate AI Recap
+
+Install Ollama and pull a local model:
+
+```bash
+ollama pull qwen2.5:7b
+```
+
+Then run:
+
+```bash
+python -m scripts.ask_chronicle
+```
+
 ---
 
-# .gitignore
-
-Recommended `.gitignore`:
+# Recommended .gitignore
 
 ```gitignore
 # Python
@@ -213,6 +265,9 @@ conda-meta/
 
 # Database
 data/*.db
+
+# Generated outputs
+outputs/
 
 # VS Code
 .vscode/
@@ -233,40 +288,33 @@ Chronicle is intentionally designed as:
 * modular
 * extensible
 * AI-native
+* explainable
 
 The system is being developed incrementally:
 
-1. reliable data collection
-2. structured memory
-3. intelligent summarization
-4. forecasting and operational reasoning
+1. reliable activity capture
+2. structured operational memory
+3. semantic understanding
+4. AI-assisted summarization
+5. long-term forecasting and reasoning
 
----
-
-# Inspiration
-
-Chronicle is inspired by:
-
-* operational intelligence systems
-* workflow analytics platforms
-* AI memory architectures
-* context-aware assistants
-* digital executive assistants
+Chronicle prioritizes deterministic preprocessing and interpretable pipelines before introducing autonomous AI behavior.
 
 ---
 
 # Future Vision
 
-The eventual goal is to build a system capable of:
+The long-term goal is to build a local-first operational intelligence system capable of:
 
-* reconstructing complete work sessions
-* identifying unfinished work automatically
+* reconstructing complete workflows
 * understanding long-term project context
-* forecasting likely next actions
-* surfacing forgotten research/topics
-* functioning as a persistent AI operational assistant
+* detecting unfinished/open-loop tasks
+* surfacing forgotten research automatically
+* forecasting likely future work
+* identifying recurring behavioral patterns
+* functioning as a persistent AI executive assistant
 
-Chronicle is intended to evolve into a local-first AI memory platform rather than simply a time-tracking application.
+Chronicle is intended to evolve beyond time tracking into a continuously learning operational memory platform.
 
 ---
 

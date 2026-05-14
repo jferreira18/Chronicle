@@ -20,7 +20,6 @@ def view_today():
             f"{row['window_title']} | "
             f"{row['duration_seconds']}s"
         )
-
-
+        
 if __name__ == "__main__":
     view_today()

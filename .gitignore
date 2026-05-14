@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+
+# Virtual environments
+.env
+venv/
+.venv/
+
+# Conda
+.envs/
+conda-meta/
+
+# Database
+data/chronicle.db
+data/*.db
+
+# VS Code
+.vscode/
+
+outputs/
+
+# OS files
+.DS_Store
+Thumbs.db
