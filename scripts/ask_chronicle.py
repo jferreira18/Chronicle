@@ -1,7 +1,7 @@
 import subprocess
 from pathlib import Path
 from datetime import datetime
-
+import re
 
 OUTPUT_DIR = Path("outputs")
 MODEL_NAME = "qwen2.5:7b"
@@ -17,6 +17,14 @@ def get_latest_summary_file():
 
     return summaries[-1]
 
+def clean_ollama_output(text: str) -> str:
+    # Remove ANSI / terminal control sequences
+    text = re.sub(r"\x1b\[[0-9;?]*[A-Za-z]", "", text)
+
+    # Remove common leftover weird characters
+    text = text.replace("�", "")
+
+    return text.strip()
 
 def build_prompt(summary_text: str) -> str:
     return f"""
@@ -81,7 +89,7 @@ def main():
     print("\nAsking Chronicle...\n")
 
     prompt = build_prompt(summary_text)
-    response = ask_ollama(prompt)
+    response = clean_ollama_output(ask_ollama(prompt))
 
     print(response)
 

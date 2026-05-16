@@ -2,6 +2,7 @@ from collections import defaultdict
 from scripts.sessionize import build_sessions
 from pathlib import Path
 from datetime import datetime
+import json
 
 OUTPUT_DIR = Path("outputs")
 OUTPUT_DIR.mkdir(exist_ok=True)
@@ -72,6 +73,46 @@ def summarize_day():
             f.write(f"\n{start}-{end} | {s['topic']} | {minutes} min\n")
             for item in s["evidence"][:3]:
                 f.write(f"  - {item}\n")
+            
+        json_path = OUTPUT_DIR / f"daily_summary_{datetime.now().date()}.json"
+        daily_json = {
+            "date": str(datetime.now().date()),
+            "total_tracked_minutes": round(total_seconds / 60, 1),
+            "total_sessions": len(sessions),
+            "top_topics": [
+                {
+                    "topic": topic,
+                    "minutes": round(seconds / 60, 1),
+                }
+                for topic, seconds in sorted(topic_totals.items(), key=lambda x: x[1], reverse=True)
+            ],
+            "top_categories": [
+                {
+                    "category": category,
+                    "minutes": round(seconds / 60, 1),
+                }
+                for category, seconds in sorted(category_totals.items(), key=lambda x: x[1], reverse=True)
+            ],
+            "major_activity_blocks": [
+                {
+                    "start": s["start"].strftime("%H:%M"),
+                    "end": s["end"].strftime("%H:%M"),
+                    "topic": s["topic"],
+                    "category": s["category"],
+                    "duration_minutes": round(s["duration_seconds"] / 60, 1),
+                    "apps": sorted(list(s["apps"])),
+                    "evidence": s["evidence"][:5],
+                    "related_projects": s.get("related_projects", []),
+                }
+                for s in sessions
+                if s["duration_seconds"] >= 30
+            ],
+        }
+
+        with open(json_path, "w", encoding="utf-8") as f:
+            json.dump(daily_json, f, indent=2)
+
+        print(f"Saved JSON summary to: {json_path}")
 
     print(f"\nSaved summary to: {summary_path}")
 if __name__ == "__main__":

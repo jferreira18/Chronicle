@@ -231,6 +231,12 @@ python -m scripts.view_today
 python -m scripts.summarize_day
 ```
 
+## Generate Weekly Summary
+
+'''bash
+python -m scripts.weekly_review
+'''
+
 ## Generate AI Recap
 
 Install Ollama and pull a local model:

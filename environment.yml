@@ -11,7 +11,8 @@ dependencies:
 
   # Core utilities
   - psutil
-
+  - fastapi
+  - uvicorn
   # Pip installs
   - pip:
       - pywin32
