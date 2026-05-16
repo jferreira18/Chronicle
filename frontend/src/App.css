@@ -276,7 +276,7 @@ h1 {
   overflow-wrap: break-word;
   word-break: normal;
   font-family: inherit;
-  margin: 0;
+  margin: 0;git stat
 }
 
 .ai-recap-box p {
@@ -290,4 +290,112 @@ h1 {
   padding: 1rem;
   color: #7cffb2;
   overflow-x: auto;
+}
+
+.ask-box {
+  display: grid;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.ask-box textarea {
+  width: 100%;
+  resize: vertical;
+  border-radius: 16px;
+  border: 1px solid rgba(181, 119, 255, 0.3);
+  background: rgba(5, 5, 7, 0.7);
+  color: #f5f3ff;
+  padding: 1rem;
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+}
+
+.ask-box textarea:focus {
+  border-color: rgba(124, 255, 178, 0.65);
+  box-shadow: 0 0 0 3px rgba(124, 255, 178, 0.08);
+}
+
+.ask-box button,
+.suggestion-chip {
+  border: none;
+  border-radius: 999px;
+  padding: 0.75rem 1rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.ask-box button {
+  width: fit-content;
+  background: linear-gradient(90deg, #b577ff, #7cffb2);
+  color: #050507;
+}
+
+.ask-box button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.suggestion-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-bottom: 1.25rem;
+}
+
+.suggestion-chip {
+  background: rgba(124, 255, 178, 0.08);
+  border: 1px solid rgba(124, 255, 178, 0.18);
+  color: #7cffb2;
+}
+
+.answer-stack {
+  display: grid;
+  gap: 1rem;
+}
+
+.answer-card {
+  border: 1px solid rgba(181, 119, 255, 0.25);
+  border-radius: 18px;
+  padding: 1.25rem;
+  background: rgba(5, 5, 7, 0.45);
+}
+
+.answer-card h3 {
+  margin-top: 0.25rem;
+  color: #ffffff;
+}
+
+.question-label,
+.model-label {
+  color: #a99ccc;
+  font-size: 0.85rem;
+  margin-bottom: 0.25rem;
+}
+
+.error-text {
+  color: #ff8fa3;
+  font-weight: 700;
+}
+
+.logger-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.logger-controls button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.65rem 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  background: linear-gradient(90deg, #b577ff, #7cffb2);
+  color: #050507;
+}
+
+.logger-controls span {
+  color: #cfc7e8;
+  font-size: 0.9rem;
 }

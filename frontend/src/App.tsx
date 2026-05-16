@@ -39,25 +39,55 @@ type AIRecap = {
   recap: string;
 };
 
+type AskResponse = {
+  question: string;
+  answer: string;
+  model: string;
+};
+
 function App() {
   const [activeTab, setActiveTab] = useState<Tab>("today");
   const [summary, setSummary] = useState<DailySummary | null>(null);
   const [weekly, setWeekly] = useState<WeeklyReview | null>(null);
   const [loading, setLoading] = useState(true);
   const [aiRecap, setAiRecap] = useState<AIRecap | null>(null);
+  const [loggerStatus, setLoggerStatus] = useState("unknown");
 
-  useEffect(() => {
-    Promise.all([
+  async function startLogger() {
+    const res = await fetch("http://127.0.0.1:8000/logger/start", {
+      method: "POST",
+    });
+    const data = await res.json();
+    setLoggerStatus(data.status);
+
+    await refreshDashboard();
+  }
+
+  async function stopLogger() {
+    const res = await fetch("http://127.0.0.1:8000/logger/stop", {
+      method: "POST",
+    });
+    const data = await res.json();
+    setLoggerStatus(data.status);
+
+    await refreshDashboard();
+  }
+
+  async function refreshDashboard() {
+    const [dailyData, weeklyData, aiData] = await Promise.all([
       fetch("http://127.0.0.1:8000/daily-summary").then((res) => res.json()),
       fetch("http://127.0.0.1:8000/weekly-review").then((res) => res.json()),
       fetch("http://127.0.0.1:8000/ai-recap").then((res) => res.json()),
-    ])
-    .then(([dailyData, weeklyData, aiData]) => {
-      setSummary(dailyData);
-      setWeekly(weeklyData);
-      setAiRecap(aiData);
-      setLoading(false);
-    })
+    ]);
+
+    setSummary(dailyData);
+    setWeekly(weeklyData);
+    setAiRecap(aiData);
+  }
+
+  useEffect(() => {
+    refreshDashboard()
+      .then(() => setLoading(false))
       .catch((err) => {
         console.error(err);
         setLoading(false);
@@ -79,8 +109,16 @@ function App() {
           </p>
         </div>
 
-        <div className="status-pill">API Connected</div>
+        <div className="logger-controls">
+          <div className="status-pill">API Connected</div>
+          <button onClick={startLogger}>Start Logger</button>
+          <button onClick={stopLogger}>Stop Logger</button>
+          <button onClick={refreshDashboard}>Refresh Dashboard</button>
+          <span>Logger: {loggerStatus}</span>
+        </div>
       </section>
+
+
 
       <nav className="tabs">
         <button
@@ -244,30 +282,103 @@ function WeeklyView({ weekly }: { weekly: WeeklyReview }) {
 }
 
 function AIView({ aiRecap }: { aiRecap: AIRecap | null }) {
-  if (!aiRecap) {
-    return (
-      <section className="panel">
-        <h2>AI Recap</h2>
-        <p className="note">
-          No AI recap found yet. Run:
-        </p>
+  const [question, setQuestion] = useState("");
+  const [answers, setAnswers] = useState<AskResponse[]>([]);
+  const [asking, setAsking] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-        <pre className="code-block">python -m scripts.ask_chronicle</pre>
-      </section>
-    );
+  async function askChronicle() {
+    if (!question.trim()) return;
+
+    setAsking(true);
+    setError(null);
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/ask", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ question }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Request failed: ${response.status}`);
+      }
+
+      const data: AskResponse = await response.json();
+
+      setAnswers((prev) => [data, ...prev]);
+      setQuestion("");
+    } catch (err) {
+      console.error(err);
+      setError("Chronicle could not answer that question.");
+    } finally {
+      setAsking(false);
+    }
   }
 
   return (
     <section className="panel">
-      <h2>AI Recap</h2>
+      <h2>Ask Chronicle</h2>
 
       <p className="note">
-        Source: {aiRecap.source_file}
+        Ask questions about your recent activity, weekly patterns, context switching, or project focus.
       </p>
 
-      <div className="ai-recap-box">
-      <pre className="ai-recap-text">{aiRecap.recap}</pre>
+      <div className="ask-box">
+        <textarea
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Example: What did I focus on most today?"
+          rows={3}
+        />
+
+        <button onClick={askChronicle} disabled={asking || !question.trim()}>
+          {asking ? "Thinking..." : "Ask Chronicle"}
+        </button>
       </div>
+
+      {error && <p className="error-text">{error}</p>}
+
+      <div className="suggestion-row">
+        {[
+          "What did I focus on most today?",
+          "What did I focus on this week?",
+          "Was I context switching a lot?",
+          "What should I revisit tomorrow?",
+        ].map((suggestion) => (
+          <button
+            className="suggestion-chip"
+            key={suggestion}
+            onClick={() => setQuestion(suggestion)}
+          >
+            {suggestion}
+          </button>
+        ))}
+      </div>
+
+      <div className="answer-stack">
+        {answers.map((item, index) => (
+          <article className="answer-card" key={index}>
+            <p className="question-label">You asked:</p>
+            <h3>{item.question}</h3>
+
+            <p className="question-label">Chronicle answered:</p>
+            <pre className="ai-recap-text">{item.answer}</pre>
+
+            <p className="model-label">Model: {item.model}</p>
+          </article>
+        ))}
+      </div>
+
+      {aiRecap && (
+        <div className="ai-recap-box">
+          <h3>Latest Daily AI Recap</h3>
+          <p className="note">Source: {aiRecap.source_file}</p>
+          <pre className="ai-recap-text">{aiRecap.recap}</pre>
+        </div>
+      )}
     </section>
   );
 }
