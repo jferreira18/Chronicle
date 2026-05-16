@@ -26,7 +26,14 @@ Chronicle aims to function as a lightweight AI executive assistant that builds c
 * [x] Sessionization and activity grouping
 * [x] Activity categorization and topic inference
 * [x] Daily summary generation
+* [x] Weekly behavioral aggregation
+* [x] Daily and weekly JSON exports
 * [x] Local Ollama AI recap generation
+* [x] Conversational “Ask Chronicle” querying
+* [x] FastAPI local backend
+* [x] React + TypeScript frontend dashboard
+* [x] GUI logger controls
+* [x] Local AI query interface
 * [x] Exportable summary and recap artifacts
 * [x] Modular architecture foundation
 
@@ -42,7 +49,11 @@ Chronicle currently tracks and reconstructs:
 * context switching behavior
 * lightweight project relationships
 * daily operational summaries
+* weekly behavioral aggregation
 * local AI-generated activity recaps
+* conversational querying over activity history
+* structured JSON exports for downstream analytics
+* local GUI-based interaction and control
 
 All activity processing and AI inference currently run locally.
 
@@ -98,9 +109,17 @@ vector databases or autonomous behaviors.
 ## Backend
 
 * Python 3.12
+* FastAPI
 * SQLite
 * psutil
 * pywin32
+* uvicorn
+
+## Frontend
+
+* React
+* TypeScript
+* Vite
 
 ## AI / Analytics
 
@@ -108,13 +127,15 @@ vector databases or autonomous behaviors.
 * Local LLM inference
 * Rule-based semantic categorization
 * Sessionization pipeline
+* Conversational activity querying
 
 ## Planned
 
-* FastAPI
-* React / TypeScript
+* Tauri
 * ChromaDB or pgvector
 * Docker
+* Semantic embeddings
+* Streaming inference
 
 ---
 
@@ -123,10 +144,12 @@ vector databases or autonomous behaviors.
 ```text
 Chronicle/
   agent/         # activity collection agents
+  api/           # FastAPI backend
   db/            # database initialization + schemas
+  frontend/      # React + TypeScript GUI
   services/      # business logic
   scripts/       # runnable entry points
-  outputs/       # generated summaries + AI recaps
+  outputs/       # summaries, JSON exports, AI recaps
   data/          # local SQLite database
 ```
 
@@ -159,6 +182,7 @@ Chronicle/
 * [x] Ollama integration
 * [x] Local LLM summaries
 * [x] Session recap generation
+* [x] Conversational “Ask Chronicle” querying
 * [ ] Open-loop extraction
 * [ ] Suggested next actions
 * [ ] Multi-day behavioral analysis
@@ -181,12 +205,15 @@ Chronicle/
 
 ## Phase 6 — UI / Dashboard
 
-* [ ] FastAPI backend
-* [ ] React frontend
+* [x] FastAPI backend
+* [x] React frontend
+* [x] AI recap dashboard
+* [x] Ask Chronicle interface
+* [x] GUI logger controls
 * [ ] Activity timeline visualization
-* [ ] AI insight dashboard
 * [ ] Search interface
-* [ ] Conversational “Ask Chronicle” interface
+* [ ] Live dashboard updates
+* [ ] Tauri desktop application packaging
 
 ## Phase 7 — Advanced Agent Features
 
@@ -233,9 +260,9 @@ python -m scripts.summarize_day
 
 ## Generate Weekly Summary
 
-'''bash
+```bash
 python -m scripts.weekly_review
-'''
+```
 
 ## Generate AI Recap
 
@@ -250,6 +277,82 @@ Then run:
 ```bash
 python -m scripts.ask_chronicle
 ```
+
+---
+
+# Running Chronicle GUI
+
+## Start FastAPI Backend
+
+```bash
+uvicorn api.main:app --reload
+```
+
+## Start React Frontend
+
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+Frontend will typically run at:
+
+```text
+http://localhost:5173
+```
+
+FastAPI backend will run at:
+
+```text
+http://127.0.0.1:8000
+```
+
+---
+
+# Ask Chronicle
+
+Chronicle includes a conversational local AI interface capable of answering questions about recent activity, behavioral patterns, and project focus.
+
+Example questions:
+
+```text
+What did I focus on most today?
+What projects recur together?
+Was I context switching frequently?
+What should I revisit tomorrow?
+```
+
+The system currently uses local Ollama inference and FastAPI endpoints to provide conversational retrieval over Chronicle summaries and behavioral data.
+
+---
+
+# Planned Desktop Application
+
+Chronicle is being architected toward a local-first desktop application using:
+
+```text
+React + TypeScript
+→ Tauri desktop shell
+→ FastAPI backend
+→ Local SQLite + Ollama
+```
+
+The long-term goal is to package Chronicle as a standalone executable desktop AI assistant capable of persistent workflow memory and operational reasoning.
+
+---
+
+# Current TODOs
+
+* [ ] Automatic dashboard refresh after logger stop/start
+* [ ] Live activity timeline visualization
+* [ ] Browser history integration
+* [ ] Embedding/vector memory system
+* [ ] Streaming AI responses
+* [ ] Semantic search
+* [ ] Tauri desktop packaging
+* [ ] Persistent conversational memory
+* [ ] Focus and interruption scoring
 
 ---
 
